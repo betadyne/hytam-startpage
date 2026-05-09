@@ -1,5 +1,7 @@
 Personal start page. This is a fork of [One Page](https://github.com/R-Jin/One-page) with zero dependencies.
 
+![Screenshot](./screenshots/screenshot1.png)
+
 ## Features
 
 - Live clock and date
