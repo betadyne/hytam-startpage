@@ -1,0 +1,235 @@
+:root {
+    --maxWidth: 1280px;
+    --bg-color: #282c34;
+    --white: #fff;
+    --lightGray: #dadbdb;
+    --darkGray: #abb2bf;
+    --red: #e06c75;
+    --green: #98c379;
+    --yellow: #e5c07b;
+    --blue: #61afef;
+    --purple: #c678dd;
+
+    --fontVeryBig: clamp(2.25rem, 4vw, 3.125rem);
+    --fontBig: clamp(1.25rem, 2vw, 1.625rem);
+    --fontMed: clamp(0.95rem, 1.3vw, 1.1rem);
+    --fontSmall: clamp(0.8rem, 1vw, 0.9rem);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    font-family: "Fira Sans", sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--white);
+}
+
+h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+p {
+    font-size: 1rem;
+    color: var(--white);
+}
+
+.wrapper {
+    padding: clamp(1.5rem, 5vw, 10rem);
+    display: flex;
+    justify-content: space-evenly;
+    gap: clamp(1rem, 3vw, 5rem);
+    background-color: var(--bg-color);
+    height: 100vh;
+}
+
+.container {
+    display: flex;
+    flex: 3;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: min(26.25rem, 100%);
+    max-width: 40rem;
+    width: 100%;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.time-wrapper {
+    font-family: "Fira Sans", sans-serif;
+}
+
+.time-h1 {
+    font-size: var(--fontVeryBig);
+    font-weight: bold;
+    color: var(--red);
+    margin: 0;
+}
+
+.time-h2 {
+    font-size: var(--fontBig);
+    color: var(--lightGray);
+}
+
+.weather-wrapper {
+    font-family: "Fira Sans", sans-serif;
+    color: var(--lightGray);
+    text-align: right;
+}
+
+.weather-container {
+    display: flex;
+    height: 60px;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.weather-temp {
+    font-weight: bold;
+    font-size: var(--fontBig);
+}
+
+.weather-desc {
+    font-size: var(--fontBig);
+}
+
+.arrow-up {
+    color: var(--red);
+}
+
+.arrow-down {
+    color: var(--blue);
+}
+
+.weather-placeholder {
+    cursor: pointer;
+    color: var(--darkGray);
+    font-size: var(--fontBig);
+    font-style: italic;
+    text-align: right;
+    font-family: "Fira Sans", sans-serif;
+}
+
+.weather-placeholder:hover {
+    color: var(--lightGray);
+}
+
+.weather-content {
+    position: relative;
+}
+
+.clear-coords-btn {
+    position: absolute;
+    top: 16px;
+    left: -36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: transparent;
+    border: 1.5px solid var(--darkGray);
+    border-radius: 4px;
+    color: var(--darkGray);
+    cursor: pointer;
+    opacity: 0.45;
+    transition: all 0.2s ease;
+}
+
+.clear-coords-btn:hover {
+    border-color: var(--red);
+    color: var(--red);
+    opacity: 1;
+}
+
+.clear-coords-btn svg {
+    display: block;
+}
+
+.artwork {
+    flex: 1;
+    background-size: cover;
+    background-position: center;
+    border: solid 3px var(--lightGray);
+    margin-right: clamp(20px, 4vw, 80px);
+    min-width: clamp(10rem, 18vw, 15.625rem);
+    max-width: 25.5rem;
+    background-image: url("image.jpg");
+}
+
+.links-wrapper {
+    display: flex;
+    justify-content: space-between;
+    gap: clamp(1rem, 2vw, 3rem);
+}
+
+.links-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.links-heading {
+    font-size: var(--fontBig);
+    margin-bottom: 0.5rem;
+}
+
+.links-heading.blue {
+    color: var(--blue);
+}
+
+.links-heading.purple {
+    color: var(--purple);
+}
+
+.links-heading.green {
+    color: var(--green);
+}
+
+.links-link {
+    font-size: var(--fontMed);
+    padding: 0.5rem;
+    text-decoration: none;
+    color: var(--white);
+    display: block;
+}
+
+.links-link:hover {
+    text-decoration: underline;
+}
+
+.quote-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.quote-text {
+    font-size: var(--fontMed);
+    font-style: italic;
+    color: var(--lightGray);
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+}
+
+.quote-author {
+    font-size: var(--fontSmall);
+    color: var(--darkGray);
+}

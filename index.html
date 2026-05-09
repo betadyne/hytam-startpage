@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="theme-color" content="#000000" />
+        <title>Startpage</title>
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Fira+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap"
+        />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div class="wrapper">
+            <div class="artwork"></div>
+            <div class="container">
+                <header class="header">
+                    <div class="time-wrapper">
+                        <div class="time-h1" id="clock-time">00:00</div>
+                        <div class="time-h2" id="clock-date">Loading...</div>
+                    </div>
+                    <div class="weather-wrapper" id="weather-section">
+                        <div
+                            class="weather-placeholder"
+                            id="weather-placeholder"
+                            style="display: none"
+                        >
+                            click to activate
+                        </div>
+                        <div
+                            class="weather-content"
+                            id="weather-content"
+                            style="display: none"
+                        >
+                            <button
+                                class="clear-coords-btn"
+                                id="clear-coords-btn"
+                                style="display: none"
+                                title="Clear saved coordinates"
+                            >
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    width="16"
+                                    height="16"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2.5"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                            <div class="weather-container">
+                                <span
+                                    class="weather-temp"
+                                    id="weather-temp"
+                                ></span>
+                            </div>
+                            <div class="weather-desc" id="weather-desc"></div>
+                        </div>
+                    </div>
+                </header>
+                <section class="links-wrapper" id="links-wrapper"></section>
+                <section class="quote-wrapper" id="quote-wrapper"></section>
+            </div>
+        </div>
+
+        <script src="quotes.js"></script>
+        <script src="links.js"></script>
+        <script>
+            function updateClock() {
+                var now = new Date();
+                var hours = String(now.getHours()).padStart(2, "0");
+                var minutes = String(now.getMinutes()).padStart(2, "0");
+                document.getElementById("clock-time").textContent =
+                    hours + ":" + minutes;
+
+                var days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+                var months = [
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December",
+                ];
+                var dayName = days[now.getDay()];
+                var dayNum = now.getDate();
+                var monthName = months[now.getMonth()];
+                document.getElementById("clock-date").textContent =
+                    dayName + " | " + dayNum + " | " + monthName;
+            }
+            setInterval(updateClock, 1000);
+
+            function getWeatherDescription(code) {
+                var map = {
+                    0: "Clear sky",
+                    1: "Mainly clear",
+                    2: "Partly cloudy",
+                    3: "Overcast",
+                    45: "Foggy",
+                    48: "Depositing rime fog",
+                    51: "Light drizzle",
+                    53: "Moderate drizzle",
+                    55: "Dense drizzle",
+                    56: "Light freezing drizzle",
+                    57: "Dense freezing drizzle",
+                    61: "Slight rain",
+                    63: "Moderate rain",
+                    65: "Heavy rain",
+                    66: "Light freezing rain",
+                    67: "Heavy freezing rain",
+                    71: "Slight snowfall",
+                    73: "Moderate snowfall",
+                    75: "Heavy snowfall",
+                    77: "Snow grains",
+                    80: "Slight rain showers",
+                    81: "Moderate rain showers",
+                    82: "Violent rain showers",
+                    85: "Slight snow showers",
+                    86: "Heavy snow showers",
+                    95: "Thunderstorm",
+                    96: "Thunderstorm with slight hail",
+                    99: "Thunderstorm with heavy hail",
+                };
+                return map[code] || "Unknown";
+            }
+
+            function fetchWeather(lat, lon) {
+                var url =
+                    "https://api.open-meteo.com/v1/forecast?latitude=" +
+                    lat +
+                    "&longitude=" +
+                    lon +
+                    "&current=temperature_2m,weather_code&timezone=auto";
+
+                fetch(url)
+                    .then(function (response) {
+                        if (!response.ok) throw new Error("Weather API error");
+                        return response.json();
+                    })
+                    .then(function (data) {
+                        var temp = Math.round(data.current.temperature_2m);
+                        var desc = getWeatherDescription(
+                            data.current.weather_code,
+                        );
+                        document.getElementById("weather-temp").textContent =
+                            temp + "\u00B0C";
+                        document.getElementById("weather-desc").textContent =
+                            desc;
+                        document.getElementById(
+                            "weather-placeholder",
+                        ).style.display = "none";
+                        document.getElementById(
+                            "weather-content",
+                        ).style.display = "block";
+                    })
+                    .catch(function () {
+                        document.getElementById(
+                            "weather-placeholder",
+                        ).textContent = "Weather unavailable";
+                        document.getElementById(
+                            "weather-placeholder",
+                        ).style.display = "block";
+                        document.getElementById(
+                            "weather-content",
+                        ).style.display = "none";
+                    });
+            }
+
+            function isValidLat(val) {
+                var num = parseFloat(val);
+                return !isNaN(num) && num >= -90 && num <= 90;
+            }
+            function isValidLon(val) {
+                var num = parseFloat(val);
+                return !isNaN(num) && num >= -180 && num <= 180;
+            }
+
+            function initWeather() {
+                var savedLat = localStorage.getItem("startpage-lat");
+                var savedLon = localStorage.getItem("startpage-lon");
+
+                if (savedLat && savedLon) {
+                    document.getElementById("clear-coords-btn").style.display =
+                        "inline-flex";
+                    fetchWeather(savedLat, savedLon);
+                    return;
+                }
+
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        function (position) {
+                            var lat = position.coords.latitude.toString();
+                            var lon = position.coords.longitude.toString();
+                            localStorage.setItem("startpage-lat", lat);
+                            localStorage.setItem("startpage-lon", lon);
+                            document.getElementById(
+                                "clear-coords-btn",
+                            ).style.display = "inline-flex";
+                            fetchWeather(lat, lon);
+                        },
+                        function () {
+                            showWeatherPlaceholder();
+                        },
+                    );
+                } else {
+                    showWeatherPlaceholder();
+                }
+            }
+
+            function clearCoordinates() {
+                localStorage.removeItem("startpage-lat");
+                localStorage.removeItem("startpage-lon");
+                document.getElementById("clear-coords-btn").style.display =
+                    "none";
+                showWeatherPlaceholder();
+            }
+
+            function showWeatherPlaceholder() {
+                var ph = document.getElementById("weather-placeholder");
+                ph.textContent = "click to activate";
+                ph.style.display = "block";
+                document.getElementById("weather-content").style.display =
+                    "none";
+                document.getElementById("clear-coords-btn").style.display =
+                    "none";
+
+                ph.onclick = function () {
+                    var lat = prompt("Enter latitude:", "-3.006898");
+                    if (lat === null) return;
+                    if (!isValidLat(lat)) {
+                        alert(
+                            "Invalid latitude. Must be a number between -90 and 90.",
+                        );
+                        return;
+                    }
+                    var lon = prompt("Enter longitude:", "104.797511");
+                    if (lon === null) return;
+                    if (!isValidLon(lon)) {
+                        alert(
+                            "Invalid longitude. Must be a number between -180 and 180.",
+                        );
+                        return;
+                    }
+                    localStorage.setItem("startpage-lat", lat.trim());
+                    localStorage.setItem("startpage-lon", lon.trim());
+                    document.getElementById("clear-coords-btn").style.display =
+                        "inline-flex";
+                    fetchWeather(lat.trim(), lon.trim());
+                };
+            }
+
+            function displayQuote() {
+                if (!window.quotes || window.quotes.length === 0) return;
+                var qi = Math.floor(Math.random() * window.quotes.length);
+                var quote = window.quotes[qi];
+                var html =
+                    '<div class="quote-text">"' +
+                    escapeHtml(quote.content) +
+                    '"</div>';
+                html +=
+                    '<div class="quote-author">- ' +
+                    escapeHtml(quote.author) +
+                    "</div>";
+                document.getElementById("quote-wrapper").innerHTML = html;
+            }
+
+            function escapeHtml(text) {
+                var div = document.createElement("div");
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            function renderLinks() {
+                if (!window.links || window.links.length === 0) return;
+                var html = "";
+                for (var i = 0; i < window.links.length; i++) {
+                    var group = window.links[i];
+                    html += '<div class="links-container">';
+                    html +=
+                        '<h3 class="links-heading ' +
+                        group.color +
+                        '">' +
+                        escapeHtml(group.heading) +
+                        "</h3>";
+                    for (var j = 0; j < group.links.length; j++) {
+                        var link = group.links[j];
+                        html +=
+                            '<a class="links-link" href="' +
+                            link.url +
+                            '">' +
+                            escapeHtml(link.name) +
+                            "</a>";
+                    }
+                    html += "</div>";
+                }
+                document.getElementById("links-wrapper").innerHTML = html;
+            }
+
+            document.getElementById("clear-coords-btn").onclick =
+                clearCoordinates;
+            updateClock();
+            initWeather();
+            displayQuote();
+            renderLinks();
+        </script>
+    </body>
+</html>
